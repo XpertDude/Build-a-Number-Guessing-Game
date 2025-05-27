@@ -42,8 +42,8 @@ echo $SECRET_NUMBER
   elif (( NUMBER > SECRET_NUMBER )); then
     echo "It's lower than that, guess again:"
   else
-    echo -e "\nYou guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
-    
+     echo -e "\nYou guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
+      
     # Update stats in the database
     USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$USERNAME'")
     $PSQL "UPDATE users SET games_played=$GAMES_PLAYED + 1 WHERE username='$USERNAME'"
