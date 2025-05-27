@@ -13,9 +13,9 @@ USER_INFO=$($PSQL "SELECT username, games_played, best_game FROM users WHERE use
 if [[ -z $USER_INFO ]]; then
   echo -e "\nWelcome, $USERNAME! It looks like this is your first time here."
   INSERT_USER=$($PSQL "INSERT INTO users(username, games_played, best_game ) VALUES('$USERNAME', 0, 0)")
-else
-  IFS="|" read USERNAME GAMES_PLAYED BEST_GAME <<< "$USER_INFO"
-  echo -e "\nWelcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+  else
+    IFS="|" read USERNAME GAMES_PLAYED BEST_GAME <<< "$USER_INFO"
+    echo -e "\nWelcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
 # Generate the secret number
