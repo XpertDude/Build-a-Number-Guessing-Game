@@ -48,10 +48,10 @@ echo $SECRET_NUMBER
     USER_ID=$($PSQL "SELECT user_id FROM users WHERE username='$USERNAME'")
     $PSQL "UPDATE users SET games_played=$GAMES_PLAYED + 1 WHERE username='$USERNAME'"
     
-    # Update best_game if this is a new record
-    if [[ -z $BEST_GAME || $NUMBER_OF_GUESSES -lt $BEST_GAME ]]; then
-      $PSQL "UPDATE users SET best_game = $NUMBER_OF_GUESSES WHERE username = '$USERNAME'"
-    fi
+     # Update best_game if this is a new record
+     if [[ -z $BEST_GAME || $NUMBER_OF_GUESSES -lt $BEST_GAME ]]; then
+       $PSQL "UPDATE users SET best_game = $NUMBER_OF_GUESSES WHERE username = '$USERNAME'"
+     fi
     
     break
   fi
