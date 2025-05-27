@@ -10,16 +10,15 @@ read USERNAME
 USER_INFO=$($PSQL "SELECT username, games_played, best_game FROM users WHERE username='$USERNAME'")
 
 if [[ -z $USER_INFO ]]; then
-  # New user - insert immediately
+  # New user
   echo "Welcome, $USERNAME! It looks like this is your first time here."
   $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 0, NULL)" > /dev/null
   GAMES_PLAYED=0
-  BEST_GAME=0
+  BEST_GAME=
 else
   # Returning user
   IFS="|" read DB_USERNAME GAMES_PLAYED BEST_GAME <<< "$USER_INFO"
-  echo -e "Welcome back, $DB_USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
-
+  echo "Welcome back, $DB_USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
 fi
 
 # Generate secret number
@@ -51,10 +50,13 @@ while true; do
     GAMES_PLAYED=$((GAMES_PLAYED + 1))
     $PSQL "UPDATE users SET games_played = $GAMES_PLAYED WHERE username = '$USERNAME'" > /dev/null
 
-    # Update best game
-    if [[ -z $BEST_GAME || $NUMBER_OF_GUESSES -lt $BEST_GAME ]]; then
+    # Update best game if it's the first game or a better result
+    if [[ -z $BEST_GAME ]]; then
+      $PSQL "UPDATE users SET best_game = $NUMBER_OF_GUESSES WHERE username = '$USERNAME'" > /dev/null
+    elif (( NUMBER_OF_GUESSES < BEST_GAME )); then
       $PSQL "UPDATE users SET best_game = $NUMBER_OF_GUESSES WHERE username = '$USERNAME'" > /dev/null
     fi
+
     break
   fi
 done
