@@ -12,7 +12,6 @@ USER_INFO=$($PSQL "SELECT username, games_played, best_game FROM users WHERE use
 if [[ -z $USER_INFO ]]; then
   # New user
   echo "Welcome, $USERNAME! It looks like this is your first time here."
-  $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 0, NULL)"
   GAMES_PLAYED=0
   BEST_GAME=0
 else
@@ -46,7 +45,8 @@ while true; do
     echo "It's lower than that, guess again:"
   else
     echo -e "\nYou guessed it in $NUMBER_OF_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
-
+    #create users
+    $PSQL "INSERT INTO users(username, games_played, best_game) VALUES('$USERNAME', 0, NULL)"
     # Update stats
     GAMES_PLAYED=$((GAMES_PLAYED + 1))
     $PSQL "UPDATE users SET games_played = $GAMES_PLAYED WHERE username = '$USERNAME'"
